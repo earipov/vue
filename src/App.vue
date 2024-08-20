@@ -8,6 +8,7 @@ import Cardlist from './components/CardList.vue'
 
 const items = ref([])
 
+
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value;
 }
@@ -15,6 +16,8 @@ const onChangeSelect = (event) => {
 const onChangeSearchInput =(event) => {
   filters.searchQuery=event.target.value
 }
+
+
 
 const fetchItems = async () =>{
   try {
@@ -30,7 +33,11 @@ const fetchItems = async () =>{
   )
 
   const res = responce.data
-  items.value = res
+  items.value = res.map(obj => ({
+    ...obj,
+    isFavorite: false,
+    isAdded:false
+  }))
 } catch (err) {
   console.log(err)
 }
@@ -42,8 +49,37 @@ const filters = reactive({
 
 })
 
-onMounted(fetchItems);
+const fetchFavorite = async () => {
+try{
+  const { data: favorite }  = await axios.get(`https://c7dab8226ba8ae38.mokky.dev/favorites`)
+
+  items.value = items.value.map(item => {
+    const favorite = favorite.find(favorite => favorite.parentId === item.id);
+
+    if(!favorite){
+      return item;
+
+    }
+    return{
+      ...item,
+      isFavorite: true,
+      favoriteId: favorite.id,
+    }
+
+  })
+}
+catch(err){
+  console.log(err)
+}
+}
+
+onMounted(async () => {
+  await fetchItems();
+  await fetchFavorite();
+});
 watch(filters, fetchItems);
+
+
 
 
 </script>
