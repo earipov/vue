@@ -27,7 +27,7 @@ import Cartitemlist from './Cartitemlist.vue'
     </div>
     <button
       disabled=""
-      class="bg-line-500 transition w-full hover:bg-lime-600 active:bg-lime-700 cursor-pointer disabled:bg-slate-300 rounded-xl p-3 bg-lime-500"
+      class="bg-line-500 transition w-full hover:bg-lime-600 active:bg-lime-700 cursor-pointer  rounded-xl p-3 bg-lime-500"
     >
       Order
     </button>

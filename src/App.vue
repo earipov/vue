@@ -3,7 +3,7 @@ import { onMounted, watch, reactive, ref } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import Cardlist from './components/CardList.vue'
-// import driver from './components/driver.vue'
+import DriverMain from './components/DriverMain.vue'
 
 
 const items = ref([])
@@ -51,10 +51,10 @@ const filters = reactive({
 
 const fetchFavorite = async () => {
 try{
-  const { data: favorite }  = await axios.get(`https://c7dab8226ba8ae38.mokky.dev/favorites`)
+  const { data: favorites }  = await axios.get(`https://c7dab8226ba8ae38.mokky.dev/favorites`)
 
   items.value = items.value.map(item => {
-    const favorite = favorite.find(favorite => favorite.parentId === item.id);
+    const favorite = favorites.find(favorite => favorite.parentId === item.id);
 
     if(!favorite){
       return item;
@@ -85,7 +85,7 @@ watch(filters, fetchItems);
 </script>
 
 <template>
-  <!-- <driver />  -->
+  <!-- <DriverMain />  -->
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl mt-14">
   <Header></Header>
 
