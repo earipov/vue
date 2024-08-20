@@ -1,7 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, watch, reactive, ref } from 'vue'
 import axios from 'axios'
-import {watch} from 'vue/dist/vue'
 import Header from './components/Header.vue'
 import Cardlist from './components/CardList.vue'
 import driver from './components/driver.vue'
@@ -9,35 +8,42 @@ import driver from './components/driver.vue'
 
 const items = ref([])
 
-onMounted(async () => {
-  try {
-    const responce = await axios.get('https://c7dab8226ba8ae38.mokky.dev/items')
-    const res = [...responce.data[0]]
-    items.value = res
-  } catch (err) {
-    console.log(err)
-  }
-})
-
-const sortBy = ref ('');
-const searchQuery = ref('');
-
-const onChangeSelect = event => {
-sortBy.value = event.target.value;
+const onChangeSelect = (event) => {
+filters.sortBy = event.target.value;
 }
 
+const onChangeSearchInput =(event) => {
+  filters.searchQuery=event.target.value
+}
 
-watch(sortBy, async ()=> {
-
+const fetchItems = async () =>{
   try {
-    const responce = await axios.get('https://c7dab8226ba8ae38.mokky.dev/items?sortBy=' + sortBy.value)
+    const params = {
+      sortBy: filters.sortBy,
+    }
+
+    if(filters.searchQuery){
+      params.title = `*${filters.searchQuery}*`
+    }
+    const responce = await axios.get(`https://c7dab8226ba8ae38.mokky.dev/items`,
+      {params}
+    )
     const res = [...responce.data[0]]
     items.value = res
   } catch (err) {
     console.log(err)
   }
+}
 
-});
+onMounted(fetchItems);
+watch(filters, fetchItems);
+
+const filters = reactive({
+
+ sortBy:  'title',
+ searchQuery: '',
+
+})
 
 </script>
 
@@ -57,7 +63,7 @@ watch(sortBy, async ()=> {
             class="py-2 px-3 border border-gray-400 focus:border-gray-600 rounded-md outline-none"
           >
             <option value="name">По названию</option>
-            <option value="price">По Цене (дешевле)</option>
+            <option value="price">По Цене (дороже)</option>
             <option value="-price">По Цене (дешевле)</option>
           </select>
 
@@ -68,6 +74,7 @@ watch(sortBy, async ()=> {
               alt="search"
             />
             <input
+            @input="onChangeSearchInput"
               placeholder="Search"
               type="search"
               class="border border-gray-400 rounded-md py-2 pl-11 pr-5 outline-none focus:border-gray-600"
