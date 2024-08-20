@@ -3,13 +3,13 @@ import { onMounted, watch, reactive, ref } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import Cardlist from './components/CardList.vue'
-import driver from './components/driver.vue'
+// import driver from './components/driver.vue'
 
 
 const items = ref([])
 
 const onChangeSelect = (event) => {
-filters.sortBy = event.target.value;
+  filters.sortBy = event.target.value;
 }
 
 const onChangeSearchInput =(event) => {
@@ -21,34 +21,35 @@ const fetchItems = async () =>{
     const params = {
       sortBy: filters.sortBy,
     }
-
+    
     if(filters.searchQuery){
       params.title = `*${filters.searchQuery}*`
     }
     const responce = await axios.get(`https://c7dab8226ba8ae38.mokky.dev/items`,
-      {params}
-    )
-    const res = [...responce.data[0]]
-    items.value = res
-  } catch (err) {
-    console.log(err)
-  }
+    {params}
+  )
+
+  const res = responce.data
+  items.value = res
+} catch (err) {
+  console.log(err)
+}
 }
 
-onMounted(fetchItems);
-watch(filters, fetchItems);
-
 const filters = reactive({
-
  sortBy:  'title',
  searchQuery: '',
 
 })
 
+onMounted(fetchItems);
+watch(filters, fetchItems);
+
+
 </script>
 
 <template>
-  <!-- <driver /> -->
+  <!-- <driver />  -->
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl mt-14">
   <Header></Header>
 
