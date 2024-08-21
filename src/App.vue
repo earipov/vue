@@ -3,7 +3,7 @@ import { onMounted, watch, reactive, ref } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import Cardlist from './components/CardList.vue'
-import DriverMain from './components/DriverMain.vue'
+// import DriverMain from './components/DriverMain.vue'
 
 
 const items = ref([])
@@ -36,6 +36,7 @@ const fetchItems = async () =>{
   items.value = res.map(obj => ({
     ...obj,
     isFavorite: false,
+    favoriteId: null,
     isAdded:false
   }))
 } catch (err) {
@@ -72,6 +73,29 @@ catch(err){
   console.log(err)
 }
 }
+
+const addToFavorite = async (item) =>{
+  try{
+    
+    if(!item.isFavorite){
+      const obj ={
+      parentId: item.id
+    };
+item.isFavorite = true
+const { data } = await axios.post (`https://c7dab8226ba8ae38.mokky.dev/favorites`, obj);
+
+item.favoriteId = data.id; 
+    } else{
+      item.isFavorite = false
+      await axios.delete (`https://c7dab8226ba8ae38.mokky.dev/favorites/${item.favoriteId}`)
+      item.favoriteId = null
+
+    } 
+  } catch(err){
+    console.log(err)
+  }
+  
+} 
 
 onMounted(async () => {
   await fetchItems();
@@ -120,7 +144,7 @@ watch(filters, fetchItems);
         </div>
       </div>
 
-      <Cardlist :items="items"></Cardlist>
+      <Cardlist :items="items" @addToFavorite = "addToFavorite"></Cardlist>
     </div>
   </div>
 </template>

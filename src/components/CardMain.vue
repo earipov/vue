@@ -1,13 +1,19 @@
 <script setup>
-defineProps({
+ defineProps({
   price: String,
   title: String,
   imgUrl: String,
   isFavorite: Boolean,
   isAdded: Boolean,
   onClickFavorite: Function,
-  onClickAdd: Function
+  onClickAdd: Function,
+  id: Number
 })
+
+
+
+
+
 </script>
 
 <template>
@@ -27,7 +33,7 @@ defineProps({
         <span class="text-slate-500">Цена:</span>
         <b>{{ price }} $</b>
       </div>
-      <img :src="!isAdded ? '/plus.svg' : '/checked.svg'" alt="" @click="onClickAdd" />
+      <img :src="!isAdded ? '/plus.svg' : '/checked.svg'" alt="tick" @click="onClickAdd" />
     </div>
   </div>
 </template>

@@ -1,4 +1,6 @@
 <script setup>
+import { inject } from 'vue';
+
 defineProps({
   price: Number,
   title: String,
@@ -8,6 +10,11 @@ defineProps({
   onClickFavorite: Function,
   onClickAdd: Function
 })
+
+
+
+
+
 </script>
 
 <template>
