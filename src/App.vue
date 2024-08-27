@@ -1,13 +1,22 @@
 <script setup>
-import { onMounted, watch, reactive, ref } from 'vue'
+import { onMounted, watch, reactive, provide, ref } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import Cardlist from './components/CardList.vue'
-// import DriverMain from './components/DriverMain.vue'
+import DriverMain from './components/DriverMain.vue'
 
 
 const items = ref([])
 
+const drawerOpen = ref(false);
+
+const closeDriver = () => {
+  drawerOpen.value = false
+}
+
+const openDriver = () => { 
+  drawerOpen.value = true
+}
 
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value;
@@ -104,14 +113,17 @@ onMounted(async () => {
 watch(filters, fetchItems);
 
 
-
+provide ('cartActions', {
+  closeDriver,
+  openDriver
+})
 
 </script>
 
 <template>
-  <!-- <DriverMain />  -->
+  <DriverMain v-if="drawerOpen"  /> 
   <div class="w-4/5 m-auto bg-white rounded-xl shadow-xl mt-14">
-  <Header></Header>
+  <Header @openDraver="openDriver"></Header>
 
     <div class="p-10">
       <div class="flex justify-between items-start">

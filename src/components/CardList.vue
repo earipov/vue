@@ -8,6 +8,7 @@ const emit = defineEmits (['addToFavorite'])
 defineProps({
   items: Array,
 })
+
 </script>
 
 <template>
